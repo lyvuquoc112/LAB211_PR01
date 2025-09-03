@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -35,20 +36,22 @@ public class SetMenus extends TreeMap<String,SetMenu > implements Workable<SetMe
     public void readFormFile() throws IOException{
         FileInputStream fis = null;
         try {
-            File f = new File(pathFile);
-            if(!f.exists()){
-                System.out.println("Cannot read data from feastMenu.csv. Please check it");
-            }
-            fis = new FileInputStream(f);
-            InputStreamReader isr = new InputStreamReader(fis,"UTF-8");
+           File f = new File(pathFile);
+           if(!f.exists()){
+               System.out.println("Cannot read data from file"+pathFile+" Please check it");
+               return;
+           }
+           fis = new FileInputStream(f);
+           InputStreamReader isr = new InputStreamReader(fis,"UTF-8");
             BufferedReader br = new BufferedReader(isr);
-            String line ="";
-            while((line = br.readLine())!=null){
-                SetMenu sm = dataToObeject(line);
+            String temp ="";
+            while ((temp=br.readLine())!=null) {                
+                SetMenu sm = dataToObeject(temp);
                 if(sm!=null){
                     this.put(sm.getCode(), sm);
                 }
-            }isr.close();
+            }
+            br.close();
         } catch (Exception e) {
         } finally {
             fis.close();

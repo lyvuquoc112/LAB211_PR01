@@ -17,71 +17,88 @@ import tool.Inputter;
  *
  * @author hanly
  */
-public class MenuController {
+public class Main {
 
-    private final Inputter inputter;
-    private final Customers customers;
-    private final Orders orders;
-    private final SetMenus setMenus;
-    private final Scanner sc;
+    private static final int REGISTER_CUSOMTER = 1;
+    private static final int UPDATE_CUSTOMER_INFORMATION = 2;
+    private static final int SEARCH_CUSOMTER_BY_NAME = 3;
+    private static final int DISPLAY_FEAST_MENU = 4;
+    private static final int PLACE_FEAST_ORDER = 5;
+    private static final int UPDATE_FEAST_ORDER = 6;
+    private static final int SAVA_DATA_TO_FILE = 7;
+    private static final int DISPLAY_CUSTOMER_OR_ORDER_LIST = 8;
+    private static final int EXIT = 9;
 
-    public MenuController() {
+    private static final int COUNTINE_OPTION = 1;
+    private static final int RETURN_TO_MAIN = 2;
+
+    private static final String CUSTOMER_FILE = "Customers.dat";
+    private static final String ORDERS_FILE = "feast_order_service.dat";
+    private static final String FEAST_MENU_FILE = "D:\\FPT\\Ky 3\\LAB211\\lab 1\\SE1806-LAB211\\Set14_SU25\\De_LAB211\\01_J1.L.P0028.TraditionalFeastOrderManagement_300LOC\\FeastMenu.csv";
+
+    private static Inputter inputter;
+    private static Customers customers;
+    private static Orders orders;
+    private static SetMenus setMenus;
+    private static Scanner sc;
+
+    private static void initializeSystem() {
         inputter = new Inputter();
-        customers = new Customers("customers.dat");
-        orders = new Orders("feast_order_service.dat");
-        setMenus = new SetMenus("D:\\FPT\\Ky 3\\LAB211\\SE1806-LAB211-main\\Set14_SU25\\De_LAB211\\01_J1.L.P0028.TraditionalFeastOrderManagement_300LOC\\FeastMenu.csv");
+        customers = new Customers(CUSTOMER_FILE);
+        orders = new Orders(ORDERS_FILE);
+        setMenus = new SetMenus(FEAST_MENU_FILE);
         sc = new Scanner(System.in);
     }
 
-    public String getScanner() {
-        return sc.nextLine();
+    private static void displayMainMenu() {
+        System.out.println("\n----------MAIN MENU------------");
+        System.out.println("1. Register customers");
+        System.out.println("2. Update customer information");
+        System.out.println("3. Search for customer information by name");
+        System.out.println("4. Display feast menu");
+        System.out.println("5. Place a feast order");
+        System.out.println("6. Update a feast order");
+        System.out.println("7. Save data to file");
+        System.out.println("8. Display customers or order list");
+        System.out.println("9. Exit");
     }
 
-    public void processChoice(int choice) {
-        switch (choice) {
-            case 1:
-                handleRegisterCustomers();
-                break;
-            case 2:
-                handleUpdateCustomer();
-                break;
-            case 3:
-                handleSearchCustomer();
-                break;
-            case 4:
-                handleDisplayMenu();
-                break;
-            case 5:
-                handlePlaceOrder();
-                break;
-            case 6:
-                handleUpdateOrder();
-                break;
-            case 7:
-                handleSaveData();
-                break;
-            case 8:
-                handleDisplayData();
-                break;
-            case 9:
-                System.out.println("Thank you for using our company service");
-                break;
-            default:
-                System.out.println("Invalid option");
-        }
+    private static int getMenuChoice() {
+        int result = 0;
+        boolean more = false;
+        do {
+            System.out.print("Enter Test Case No. : ");
+            try {
+                result = Integer.parseInt(sc.nextLine());
+                more = true;
+            } catch (Exception e) {
+                System.out.println("Accept only interger. Please Re-enters");
+
+            }
+        } while (!more);
+        return result;
     }
 
-    private void handleRegisterCustomers() {
+    private static void runMainMenu() {
+        int testCase = EXIT;
+        do {
+            displayMainMenu();
+            testCase = getMenuChoice();
+            processMenuChoice(testCase);
+        } while (testCase != EXIT);
+    }
+
+    private static void handleRegisterCustomers() {
         int option = 0;
         do {
             customers.addNew(inputter.inputCustomer(null, false));
             System.out.println("1. Continue entering new customers");
             System.out.println("2. Return to the main menu");
             option = Integer.parseInt(inputter.input("Chose your option", "Option must be 1 or 2", "^[12]$"));
-        } while (option == 1);
+        } while (option == COUNTINE_OPTION);
     }
 
-    private void handleUpdateCustomer() {
+    private static void handleUpdateCustomer() {
         int option = 0;
         do {
             System.out.println("Enter customer code");
@@ -92,15 +109,15 @@ public class MenuController {
             } else {
                 Customer c = inputter.inputCustomer(customer, true);
                 c.setCustomerCode(customerCode);
-                customers.upDate(c);
+                customers.update(c);
             }
             System.out.println("1. Continue update customers");
             System.out.println("2. Return to the main menu");
             option = Integer.parseInt(inputter.input("Chose your option", "Option must be 1 or 2", "^[12]$"));
-        } while (option == 1);
+        } while (option == COUNTINE_OPTION);
     }
 
-    private void handleSearchCustomer() {
+    private static void handleSearchCustomer() {
         int option = 0;
         do {
             System.out.println("Enter name: ");
@@ -114,10 +131,10 @@ public class MenuController {
             System.out.println("1. Continue search customers by name");
             System.out.println("2. Return to the main menu");
             option = Integer.parseInt(inputter.input("Chose your option", "Option must be 1 or 2", "^[12]$"));
-        } while (option == 1);
+        } while (option == COUNTINE_OPTION);
     }
 
-    private void handleDisplayMenu() {
+    private static void handleDisplayMenu() {
         try {
             setMenus.readFormFile();
         } catch (Exception e) {
@@ -125,7 +142,7 @@ public class MenuController {
         setMenus.showAll();
     }
 
-    private void handlePlaceOrder() {
+    private static void handlePlaceOrder() {
         int option = 0;
         do {
             Order order = inputter.inputOrder(customers, setMenus, false, null);
@@ -136,10 +153,10 @@ public class MenuController {
             System.out.println("1. Continue register order");
             System.out.println("2. Return to the main menu");
             option = Integer.parseInt(inputter.input("Chose your option", "Option must be 1 or 2", "^[12]$"));
-        } while (option == 1);
+        } while (option == COUNTINE_OPTION);
     }
 
-    private void handleUpdateOrder() {
+    private static void handleUpdateOrder() {
         int option = 0;
         do {
             System.out.println("Enter order ID: ");
@@ -150,18 +167,18 @@ public class MenuController {
             } else {
                 Order updatedOrder = inputter.inputOrder(customers, setMenus, true, order);
                 if (updatedOrder != null) {
-                    orders.upDate(updatedOrder);
+                    orders.update(updatedOrder);
                     System.out.println("Order updated successfully!");
-                    
+                    orders.showAll(customers, setMenus);
                 }
             }
             System.out.println("1. Continue updating orders");
             System.out.println("2. Return to the main menu");
             option = Integer.parseInt(inputter.input("Choose your option", "Option must be 1 or 2", "^[12]$"));
-        } while (option == 1);
+        } while (option == COUNTINE_OPTION);
     }
 
-    private void handleSaveData() {
+    private static void handleSaveData() {
         int option = 0;
         System.out.println("Display options:");
         System.out.println("1. Save customers to file");
@@ -182,7 +199,7 @@ public class MenuController {
         }
     }
 
-    private void handleDisplayData() {
+    private static void handleDisplayData() {
         System.out.println("Display options:");
         System.out.println("1. Display customers list");
         System.out.println("2. Display orders list");
@@ -191,16 +208,16 @@ public class MenuController {
         int displayChoice = Integer.parseInt(sc.nextLine());
         switch (displayChoice) {
             case 1:
-                Customers customersTemp = new Customers("customers.dat");
-                if (customersTemp.size() <= 0) {
+                Customers customersTemp = new Customers(CUSTOMER_FILE);
+                if (customersTemp.isEmpty()) {
                     System.out.println("No data in the system");
                 } else {
                     customersTemp.showAll();
                 }
                 break;
             case 2:
-                Orders ordersTemp = new Orders("feast_order_service.dat");
-                if (ordersTemp.size() <= 0) {
+                Orders ordersTemp = new Orders(ORDERS_FILE);
+                if (ordersTemp.isEmpty()) {
                     System.out.println("No data in the system");
                 } else {
                     ordersTemp.showAll(customers, setMenus);
@@ -209,6 +226,49 @@ public class MenuController {
             default:
                 System.out.println("Invalid choice!");
         }
+    }
+
+    private static void handleExit() {
+        System.out.println("Thank you for using our service");
+    }
+
+    private static void processMenuChoice(int testCase) {
+        switch (testCase) {
+            case REGISTER_CUSOMTER:
+                handleRegisterCustomers();
+                break;
+            case UPDATE_CUSTOMER_INFORMATION:
+                handleUpdateCustomer();
+                break;
+            case SEARCH_CUSOMTER_BY_NAME:
+                handleSearchCustomer();
+                break;
+            case DISPLAY_FEAST_MENU:
+                handleDisplayMenu();
+                break;
+            case PLACE_FEAST_ORDER:
+                handlePlaceOrder();
+                break;
+            case UPDATE_FEAST_ORDER:
+                handleUpdateOrder();
+                break;
+            case SAVA_DATA_TO_FILE:
+                handleSaveData();
+                break;
+            case DISPLAY_CUSTOMER_OR_ORDER_LIST:
+                handleDisplayData();
+                break;
+            case EXIT:
+                handleExit();
+                break;
+            default:
+                System.out.println("Invalid option");
+        }
+    }
+
+    public static void main(String[] args) {
+        initializeSystem();
+        runMainMenu();
     }
 
 }

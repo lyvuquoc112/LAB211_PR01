@@ -84,7 +84,7 @@ public class Orders extends ArrayList<Order> implements Workable<Order, String> 
         });
 
         System.out.println("-----------------------------------------------------------------------------------");
-        System.out.format("%-8s | %-12s | %-12s | %-10s | %-18s | %-7s | %-12s\n", 
+        System.out.format("%-18s | %-12s | %-12s | %-10s | %-18s | %-7s | %-12s\n", 
             "ID", "Event date", "Customer ID", "Set Menu", "Price", "Tables", "Cost");
         System.out.println("-----------------------------------------------------------------------------------");
 
@@ -93,8 +93,8 @@ public class Orders extends ArrayList<Order> implements Workable<Order, String> 
             SetMenu menu = setMenus.searchById(order.getSetMenuCode());
             double totalCost = order.getNumberOfTable()* menu.getPrice();
 
-            System.out.format("%-8s | %-12s | %-12s | %-10s | %-18s | %7d | %-12s\n",
-                order.getCustomerCode(),
+            System.out.format("%-18s | %-12s | %-12s | %-10s | %-18s | %7d | %-12s\n",
+                order.getOrderId(),
                 sdf.format(order.getEventDate()),
                 order.getCustomerCode(),
                 order.getSetMenuCode(),
